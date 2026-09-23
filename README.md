@@ -1,4 +1,4 @@
-# 🚀 Personal Productivity App (Phase 1)
+# 🚀 Personal Productivity App
 
 A clean, modern, and scalable full-stack Personal Productivity App built with **React, TypeScript, Tailwind CSS, Express, and MySQL**.
 
