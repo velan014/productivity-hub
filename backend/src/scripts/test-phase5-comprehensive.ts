@@ -45,7 +45,11 @@ async function runComprehensivePhase5Test() {
   const ts = Date.now();
   const user1Email = `phase5.user1.${ts}@example.com`;
   const user2Email = `phase5.user2.${ts}@example.com`;
-  const password = 'Password123!';
+  const testPassword = process.env.TEST_PASSWORD;
+
+  if (!testPassword) {
+    throw new Error('TEST_PASSWORD environment variable is required');
+  }
 
   let user1Token = '';
   let user1Id = '';
@@ -63,8 +67,8 @@ async function runComprehensivePhase5Test() {
     body: JSON.stringify({
       name: 'Phase5 User One',
       email: user1Email,
-      password: password,
-      confirmPassword: password,
+      password: testPassword,
+      confirmPassword: testPassword,
     }),
   });
   if (regRes1.status === 201 && regRes1.data?.data?.token) {
@@ -82,8 +86,8 @@ async function runComprehensivePhase5Test() {
     body: JSON.stringify({
       name: 'Phase5 User Two',
       email: user2Email,
-      password: password,
-      confirmPassword: password,
+      password: testPassword,
+      confirmPassword: testPassword,
     }),
   });
   if (regRes2.status === 201 && regRes2.data?.data?.token) {
@@ -105,7 +109,7 @@ async function runComprehensivePhase5Test() {
   // B. Login Credentials Validation
   const loginValid = await request('/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ email: user1Email, password }),
+    body: JSON.stringify({ email: user1Email, password: testPassword }),
   });
   record('AUTH', 'Login with valid credentials', loginValid.status === 200 ? 'PASS' : 'FAIL');
 
@@ -117,7 +121,7 @@ async function runComprehensivePhase5Test() {
 
   const loginNonExistent = await request('/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ email: `nonexistent.${ts}@example.com`, password }),
+    body: JSON.stringify({ email: `nonexistent.${ts}@example.com`, password: testPassword }),
   });
   record('AUTH', 'Login with non-existent email rejected (401)', loginNonExistent.status === 401 ? 'PASS' : 'FAIL');
 

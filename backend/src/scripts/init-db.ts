@@ -44,7 +44,13 @@ async function initDatabase() {
 
     // 4. Generate fresh bcrypt hash for demo user
     const salt = await bcrypt.genSalt(10);
-    const demoPasswordHash = await bcrypt.hash('password123', salt);
+    const demoPassword = process.env.TEST_PASSWORD;
+
+    if (!demoPassword) {
+      throw new Error('TEST_PASSWORD environment variable is required');
+    }
+
+    const demoPasswordHash = await bcrypt.hash(demoPassword, salt);
 
     // Upsert demo user
     const demoUserId = 'demo-user-velan-001';
@@ -191,7 +197,7 @@ async function initDatabase() {
     }
 
     console.log('✅ Seed data successfully inserted!');
-    console.log('👤 Demo User: velan@example.com (password: password123)');
+    console.log('👤 Demo User: velan@example.com (password supplied via TEST_PASSWORD)');
     console.log(`📋 Inserted ${tasks.length} demo tasks.`);
   } catch (error: any) {
     console.error('❌ Database initialization error:', error.message || error.code || error);

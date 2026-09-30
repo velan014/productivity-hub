@@ -1,4 +1,8 @@
-export {};
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
 const API_BASE = 'http://localhost:5000/api';
 
 async function req(url: string, options: any = {}) {
@@ -24,6 +28,12 @@ async function req(url: string, options: any = {}) {
 async function testPhase2() {
   console.log('🧪 Starting Phase 2 Endpoints & User Isolation Test...');
 
+  const testPassword = process.env.TEST_PASSWORD;
+
+  if (!testPassword) {
+    throw new Error('TEST_PASSWORD environment variable is required');
+  }
+
   try {
     // 1. Login as Velan
     console.log('🔑 Logging in as User 1 (Velan)...');
@@ -31,7 +41,7 @@ async function testPhase2() {
       method: 'POST',
       body: {
         email: 'velan@example.com',
-        password: 'password123',
+        password: testPassword,
       },
     });
     const token1 = res1.data.token;
@@ -46,8 +56,8 @@ async function testPhase2() {
       body: {
         name: 'Alice Isolation',
         email: uniqueEmail,
-        password: 'Password123!',
-        confirmPassword: 'Password123!',
+        password: testPassword,
+        confirmPassword: testPassword,
       },
     });
     const token2 = res2.data.token;

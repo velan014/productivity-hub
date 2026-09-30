@@ -14,11 +14,14 @@ build/
 
 # Secrets and Environment Variables (CRITICAL - DO NOT COMMIT)
 .env
+*.env
+.env.*
 .env.local
 .env.*.local
-*.env
 backend/.env
 frontend/.env
+!.env.example
+!backend/.env.example
 
 # Runtime Logs
 *.log
